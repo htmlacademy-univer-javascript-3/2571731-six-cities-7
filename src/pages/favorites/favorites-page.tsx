@@ -1,43 +1,104 @@
-<article className="cities__card place-card">
-    <div className="place-card__mark">
-      <span>Premium</span>
-    </div>
-    <div className="cities__image-wrapper place-card__image-wrapper">
-      <a href="#">
-        <img
-          className="place-card__image"
-          src="img/apartment-01.jpg"
-          width="260"
-          height="200"
-          alt="Place image"
-        />
-      </a>
-    </div>
-    <div className="place-card__info">
-      <div className="place-card__price-wrapper">
-        <div className="place-card__price">
-          <b className="place-card__price-value">&euro;120</b>
-          <span className="place-card__price-text">&#47;&nbsp;night</span>
-        </div>
-        <button className="place-card__bookmark-button button" type="button">
-          <svg className="place-card__bookmark-icon" width="18" height="19">
-            <use xlinkHref="#icon-bookmark"></use>
-          </svg>
-          <span className="visually-hidden">To bookmarks</span>
-        </button>
-      </div>
-      <div className="place-card__rating rating">
-        <div className="place-card__stars rating__stars">
-          <span style={{ width: '80%' }}></span>
-          <span className="visually-hidden">Rating</span>
-        </div>
-      </div>
-      <h2 className="place-card__name">
-        <a href="#">Beautiful &amp; luxurious apartment at great location</a>
-      </h2>
-      <p className="place-card__type">Apartment</p>
-    </div>
-  </article>
-);
+import { Link } from 'react-router-dom';
+import { OfferList } from '@/components/offer-list';
+import type { Offer } from '@/types';
 
-export default OfferCard;
+type FavoritesPageProps = {
+  offers: Offer[];
+};
+
+export const FavoritesPage = ({ offers }: FavoritesPageProps) => {
+  const offersByCity = offers.reduce<Record<string, Offer[]>>((grouped, offer) => {
+    const cityName = offer.city.name;
+    grouped[cityName] = [...(grouped[cityName] ?? []), offer];
+    return grouped;
+  }, {});
+  const cities = Object.keys(offersByCity);
+
+  return (
+    <div className="page">
+      <header className="header">
+        <div className="container">
+          <div className="header__wrapper">
+            <div className="header__left">
+              <Link className="header__logo-link" to="/">
+                <img
+                  className="header__logo"
+                  src="img/logo.svg"
+                  alt="6 cities logo"
+                  width="81"
+                  height="41"
+                />
+              </Link>
+            </div>
+            <nav className="header__nav">
+              <ul className="header__nav-list">
+                <li className="header__nav-item user">
+                  <Link
+                    className="header__nav-link header__nav-link--profile"
+                    to="/favorites"
+                  >
+                    <div className="header__avatar-wrapper user__avatar-wrapper"></div>
+                    <span className="header__user-name user__name">
+                      Oliver.conner@gmail.com
+                    </span>
+                    <span className="header__favorite-count">{offers.length}</span>
+                  </Link>
+                </li>
+                <li className="header__nav-item">
+                  <Link className="header__nav-link" to="/login">
+                    <span className="header__signout">Sign out</span>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+      </header>
+
+      <main className="page__main page__main--favorites">
+        <div className="page__favorites-container container">
+          <section className="favorites">
+            <h1 className="favorites__title">Saved listing</h1>
+            {cities.length > 0 ? (
+              <ul className="favorites__list">
+                {cities.map((city) => (
+                  <li className="favorites__locations-items" key={city}>
+                    <div className="favorites__locations locations locations--current">
+                      <div className="locations__item">
+                        <span className="locations__item-link">{city}</span>
+                      </div>
+                    </div>
+                    <OfferList
+                      offers={offersByCity[city]}
+                      variant="favorite"
+                      className="favorites__places"
+                    />
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="favorites__empty">
+                <b className="favorites__empty-title">Nothing yet</b>
+                <p>
+                  Save properties by clicking the bookmark icon on the
+                  property&apos;s page.
+                </p>
+              </div>
+            )}
+          </section>
+        </div>
+      </main>
+      <footer className="footer container">
+        <Link className="footer__logo-link" to="/">
+          <img
+            className="footer__logo"
+            src="img/logo.svg"
+            alt="6 cities logo"
+            width="64"
+            height="33"
+          />
+        </Link>
+      </footer>
+    </div>
+  );
+};
