@@ -1,32 +1,18 @@
-import { useState } from 'react';
-import { OfferCard } from '@/components/offer-card';
-import type { Offer } from '@/types';
+import OfferCard from '../offer-card/offer-card';
+import { Offer } from '../../types/offer';
 
-type OfferListProps = {
+type OffersListProps = {
   offers: Offer[];
-  variant?: 'city' | 'favorite';
-  className?: string;
 };
 
-export const OfferList = ({
-  offers,
-  variant = 'city',
-  className,
-}: OfferListProps) => {
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
-
+function OffersList({ offers }: OffersListProps) {
   return (
-    <div className={className}>
+    <div className="cities__places-list places__list tabs__content">
       {offers.map((offer) => (
-        <OfferCard
-          key={offer.id}
-          offer={offer}
-          variant={variant}
-          onMouseEnter={() => setActiveOfferId(offer.id)}
-          onMouseLeave={() => setActiveOfferId(null)}
-          isActive={activeOfferId === offer.id}
-        />
+        <OfferCard key={offer.id} offer={offer} />
       ))}
     </div>
   );
-};
+}
+
+export default OffersList;

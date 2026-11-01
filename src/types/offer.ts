@@ -9,30 +9,30 @@ export type City = {
   location: Location;
 };
 
+export type OfferType = 'apartment' | 'room' | 'house' | 'hotel';
+
+export type Host = {
+  name: string;
+  avatarUrl: string;
+  isPro: boolean;
+};
+
 export type Offer = {
   id: string;
   title: string;
-  type: string;
+  type: OfferType;
+  price: number;
   city: City;
   location: Location;
-  price: number;
-  rating: number;
-  isPremium: boolean;
   isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
   previewImage: string;
-};
-
-export type OfferDetails = Offer & {
+  // поля для страницы с полным описанием (/offer/:id)
   images: string[];
+  description: string[];
   bedrooms: number;
   maxAdults: number;
   goods: string[];
-  description: string;
-  host: {
-    name: string;
-    avatarUrl: string;
-    isPro: boolean;
-  };
+  host: Host;
 };
-
-export type CardVariant = 'cities' | 'favorites' | 'near-places';
